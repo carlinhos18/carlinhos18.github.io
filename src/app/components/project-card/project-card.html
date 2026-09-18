@@ -1,0 +1,78 @@
+<div class="group h-full rounded-2xl bg-white dark:bg-dark-surface border border-gray-200 dark:border-gray-800 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-light-accent dark:hover:border-dark-accent overflow-hidden flex flex-col relative">
+  
+  <!-- Main Clickable Link (Stretched across the card) -->
+  <a [href]="repo().live_url || repo().html_url" target="_blank" rel="noopener noreferrer" class="absolute inset-0 z-0">
+    <span class="sr-only">View Project</span>
+  </a>
+
+  <!-- Project Image -->
+  @if (repo().image_url) {
+    <div class="w-full h-48 overflow-hidden relative border-b border-gray-100 dark:border-gray-800 pointer-events-none">
+      <img [src]="repo().image_url" [alt]="repo().name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+      
+      <!-- Overlay badge if it's a live website -->
+      @if (repo().live_url) {
+        <div class="absolute top-3 right-3 bg-light-accent dark:bg-dark-accent text-white text-xs font-bold px-2 py-1 rounded-md shadow-sm">
+          Live Site
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Card Content -->
+  <div class="p-6 flex flex-col flex-grow pointer-events-none">
+    <div class="flex justify-between items-start mb-4">
+      <h3 class="text-xl font-semibold text-gray-900 dark:text-white group-hover:text-light-accent dark:group-hover:text-dark-accent transition-colors">
+        {{ repo().name }}
+      </h3>
+      <!-- GitHub Icon link (higher z-index to be clickable over the stretched link) -->
+      <a [href]="repo().html_url" target="_blank" rel="noopener noreferrer" title="View Source on GitHub"
+         class="text-gray-400 hover:text-light-accent dark:hover:text-dark-accent transition-colors relative z-10 pointer-events-auto flex-shrink-0 ml-4">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+        </svg>
+      </a>
+    </div>
+    
+    <p class="text-gray-600 dark:text-gray-300 mb-6 text-sm line-clamp-3">
+      {{ repo().description || 'No description provided.' }}
+    </p>
+
+    <!-- Collaborators section -->
+    @if (repo().collaborators && repo().collaborators!.length > 0) {
+      <div class="mb-5">
+        <span class="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider block mb-2">Team</span>
+        <div class="flex flex-wrap gap-2 pointer-events-auto relative z-10">
+          @for (collab of repo().collaborators; track collab.name) {
+            <a [href]="collab.github_url" target="_blank" rel="noopener noreferrer" 
+               class="text-xs inline-flex items-center bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:text-light-accent dark:hover:text-dark-accent hover:bg-gray-200 dark:hover:bg-gray-700 px-2.5 py-1 rounded-full transition-colors border border-gray-200 dark:border-gray-700">
+              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" class="mr-1.5" viewBox="0 0 24 24">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+              </svg>
+              {{ collab.name }}
+            </a>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Bottom stats -->
+    <div class="mt-auto flex items-center space-x-4 text-xs font-medium text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-800 pt-4">
+      @if (repo().language) {
+        <div class="flex items-center">
+          <span class="w-2.5 h-2.5 rounded-full bg-light-accent dark:bg-dark-accent mr-2 pointer-events-none"></span>
+          {{ repo().language }}
+        </div>
+      }
+      @if (repo().grade) {
+        <div class="flex items-center" title="Project Grade">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/>
+          </svg>
+          Grade: {{ repo().grade }}
+        </div>
+      }
+    </div>
+  </div>
+</div>
