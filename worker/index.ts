@@ -62,10 +62,7 @@ export async function handle(request: Request, env: Env): Promise<Response> {
         return json({ error: "Configuration error: RESEND_API_KEY is not configured in Cloudflare" }, 500);
       }
 
-      if (!env.CONTACT_TO) {
-        console.error("Missing CONTACT_TO in worker environment");
-        return json({ error: "Configuration error: CONTACT_TO is not configured in Cloudflare" }, 500);
-      }
+      const targetEmail = env.CONTACT_TO || "carloslisboa2005@gmail.com";
 
       const res = await fetch("https://api.resend.com/emails", {
         method: "POST",
@@ -75,7 +72,7 @@ export async function handle(request: Request, env: Env): Promise<Response> {
         },
         body: JSON.stringify({
           from: "Portfolio <onboarding@resend.dev>",
-          to: env.CONTACT_TO,
+          to: targetEmail,
           reply_to: email,
           subject: `Portfolio message from ${name}`,
           text: `${name} <${email}>\n\n${message}`,
