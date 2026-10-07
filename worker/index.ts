@@ -57,7 +57,10 @@ export async function handle(request: Request, env: Env): Promise<Response> {
         if (!v.success) return json({ error: "Bot check failed" }, 403);
       }
 
-      if (!env.RESEND_API_KEY) {
+      const rawKey = env.RESEND_API_KEY || "";
+      const apiKey = rawKey.trim().replace(/^["']|["']$/g, "");
+
+      if (!apiKey) {
         console.error("Missing RESEND_API_KEY in worker environment");
         return json({ error: "Configuration error: RESEND_API_KEY is not configured in Cloudflare" }, 500);
       }
@@ -67,7 +70,7 @@ export async function handle(request: Request, env: Env): Promise<Response> {
       const res = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${env.RESEND_API_KEY}`,
+          Authorization: `Bearer ${apiKey}`,
           "content-type": "application/json",
         },
         body: JSON.stringify({
@@ -81,7 +84,11 @@ export async function handle(request: Request, env: Env): Promise<Response> {
 
       if (!res.ok) {
         const errorDetail = await res.text();
-        console.error("resend failed", res.status, errorDetail);
+        const masked = apiKey.length >= 8 ? `${apiKey.slice(0, 5)}...${apiKey.slice(-4)} (length ${apiKey.length})` : `(length ${apiKey.length})`;
+        console.error("resend failed", res.status, errorDetail, "key info:", masked);
+        if (res.status === 401) {
+          return json({ error: `Resend rejected API key (401). Key in Cloudflare is ${masked}. Please check that the secret matches your active Resend key.` }, 502);
+        }
         return json({ error: `Email failed (${res.status}): ${errorDetail}` }, 502);
       }
 
