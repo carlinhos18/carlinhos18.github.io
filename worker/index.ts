@@ -57,6 +57,16 @@ export async function handle(request: Request, env: Env): Promise<Response> {
         if (!v.success) return json({ error: "Bot check failed" }, 403);
       }
 
+      if (!env.RESEND_API_KEY) {
+        console.error("Missing RESEND_API_KEY in worker environment");
+        return json({ error: "Configuration error: RESEND_API_KEY is not configured in Cloudflare" }, 500);
+      }
+
+      if (!env.CONTACT_TO) {
+        console.error("Missing CONTACT_TO in worker environment");
+        return json({ error: "Configuration error: CONTACT_TO is not configured in Cloudflare" }, 500);
+      }
+
       const res = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
@@ -73,8 +83,9 @@ export async function handle(request: Request, env: Env): Promise<Response> {
       });
 
       if (!res.ok) {
-        console.error("resend failed", res.status, await res.text());
-        return json({ error: "Email failed" }, 502);
+        const errorDetail = await res.text();
+        console.error("resend failed", res.status, errorDetail);
+        return json({ error: `Email failed (${res.status}): ${errorDetail}` }, 502);
       }
 
       return json({ ok: true });
