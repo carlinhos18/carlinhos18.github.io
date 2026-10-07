@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { Header } from './components/header/header';
 import { Projects } from './components/projects/projects';
+import { Contact } from './components/contact/contact';
 import { Footer } from './components/footer/footer';
 import { ThemeService } from './services/theme';
 
 @Component({
   selector: 'app-root',
-  imports: [Header, Projects, Footer],
+  imports: [Header, Projects, Contact, Footer],
   templateUrl: './app.html',
 })
 export class App {
