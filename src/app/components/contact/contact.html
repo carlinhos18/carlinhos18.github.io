@@ -101,7 +101,7 @@
       <div class="flex justify-end">
         <button
           type="submit"
-          [disabled]="status() === 'sending'"
+          [disabled]="contactForm.invalid || status() === 'sending'"
           class="inline-flex items-center justify-center px-6 py-3 rounded-xl font-medium text-white bg-light-accent hover:bg-blue-600 dark:bg-dark-accent dark:hover:bg-cyan-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
         >
           @if (status() === 'sending') {

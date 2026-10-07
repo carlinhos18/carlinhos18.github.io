@@ -7,6 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "test:worker": "vitest run worker",
     "dev:worker": "wrangler dev",
     "deploy:worker": "wrangler deploy"
   },

@@ -16,6 +16,7 @@ export class Contact {
     email: ['', [Validators.required, Validators.pattern(/^\S+@\S+\.\S+$/)]],
     message: ['', [Validators.required, Validators.maxLength(2000)]],
     website: [''], // Honeypot
+    token: [''], // Turnstile bot verification token
   });
 
   status = signal<'idle' | 'sending' | 'success' | 'error'>('idle');
@@ -38,11 +39,12 @@ export class Contact {
           email: '',
           message: '',
           website: '',
+          token: '',
         });
       },
       error: (err) => {
         this.status.set('error');
-        const msg = err.error?.error || 'Failed to send message. Please try again later.';
+        const msg = err?.message || err?.error?.error || 'Failed to send message. Please try again later.';
         this.errorMessage.set(msg);
       },
     });
