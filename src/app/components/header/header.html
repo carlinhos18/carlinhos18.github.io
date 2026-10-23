@@ -16,7 +16,7 @@
 
       <div>
         <button (click)="toggleTheme()" 
-                class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-light-accent dark:focus-visible:ring-dark-accent"
+                class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900"
                 [attr.aria-pressed]="themeService.isDarkMode()"
                 aria-label="Toggle Dark Mode">
           @if (themeService.isDarkMode()) {
