@@ -13,6 +13,11 @@ export interface Project {
   language: string;
   grade?: string | number; // Grade received for the faculty project
   collaborators?: Collaborator[]; // Shoutout to colleagues
+  // GitHub stats from repos.json
+  stargazers_count?: number;
+  forks_count?: number;
+  topics?: string[];
+  updated_at?: string;
 }
 
 export const MY_PROJECTS: Project[] = [
@@ -98,7 +103,7 @@ export const MY_PROJECTS: Project[] = [
 
   {
     id: 7,
-    name: ' 0/1 Knapsack Problem',
+    name: '0/1 Knapsack Problem',
     description: 'Algorithmic approaches to solve this problem, including exhaustive search, dynamic programming, and approximation and linear integer programming algorithms. ',
     html_url: 'https://github.com/carlinhos18/DA2425_PRJ2_G',
     language: 'C++',

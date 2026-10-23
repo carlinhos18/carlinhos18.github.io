@@ -1,6 +1,18 @@
 import { describe, it, expect, vi } from "vitest";
 import worker from "./index";
 
+// Mock the json helper function
+const json = (data: unknown, status = 200) =>
+  new Response(JSON.stringify(data), {
+    status,
+    headers: {
+      "content-type": "application/json",
+      "access-control-allow-origin": "*",
+      "access-control-allow-methods": "POST, OPTIONS",
+      "access-control-allow-headers": "content-type",
+    },
+  });
+
 const env = {
   RESEND_API_KEY: "x",
   CONTACT_TO: "me@test.dev",
@@ -68,5 +80,44 @@ describe("/api/contact", () => {
       token: "good-token",
     });
     expect(res.status).toBe(200);
+  });
+});
+
+// Test for /api/chat
+describe("/api/chat", () => {
+  const chatEnv = { ...env };
+
+  it("returns 400 for missing message", async () => {
+    const res = await worker.fetch(
+      new Request("https://t.dev/api/chat", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({}),
+      }),
+      chatEnv
+    );
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 405 for non-POST", async () => {
+    const res = await worker.fetch(
+      new Request("https://t.dev/api/chat", { method: "GET" }),
+      chatEnv
+    );
+    expect(res.status).toBe(405);
+  });
+
+  it("returns reply for valid message", async () => {
+    const res = await worker.fetch(
+      new Request("https://t.dev/api/chat", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ message: "What projects has Carlos worked on?" }),
+      }),
+      chatEnv
+    );
+    expect(res.status).toBe(200);
+    const data = await res.json();
+    expect(data.reply).toBeTruthy();
   });
 });

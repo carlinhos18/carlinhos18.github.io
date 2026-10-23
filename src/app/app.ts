@@ -3,11 +3,12 @@ import { Header } from './components/header/header';
 import { Projects } from './components/projects/projects';
 import { Contact } from './components/contact/contact';
 import { Footer } from './components/footer/footer';
+import { ChatAssistant } from './components/chat-assistant/chat-assistant';
 import { ThemeService } from './services/theme';
 
 @Component({
   selector: 'app-root',
-  imports: [Header, Projects, Contact, Footer],
+  imports: [Header, Projects, Contact, Footer, ChatAssistant],
   templateUrl: './app.html',
 })
 export class App {

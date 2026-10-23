@@ -20,6 +20,8 @@ export const json = (data: unknown, status = 200) =>
     },
   });
 
+import { findAnswer } from './knowledge';
+
 export async function handle(request: Request, env: Env): Promise<Response> {
   const { pathname } = new URL(request.url);
 
@@ -94,6 +96,31 @@ export async function handle(request: Request, env: Env): Promise<Response> {
 
       return json({ ok: true });
     }
+  }
+
+  // NEW: /api/chat endpoint
+  if (pathname === "/api/chat") {
+    if (request.method === "OPTIONS") {
+      return new Response(null, { status: 204, headers: corsHeaders });
+    }
+
+    if (request.method !== "POST") {
+      return json({ error: "Method not allowed" }, 405);
+    }
+
+    let body: any;
+    try {
+      body = await request.json();
+    } catch {
+      return json({ error: "Invalid JSON" }, 400);
+    }
+
+    const { message } = body ?? {};
+    if (!message) return json({ error: "Missing 'message' field" }, 400);
+
+    const reply = findAnswer(message);
+
+    return json({ reply });
   }
 
   return json({ error: "Not found" }, 404);

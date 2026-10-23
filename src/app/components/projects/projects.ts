@@ -9,7 +9,7 @@ import { ProjectCard } from '../project-card/project-card';
 })
 export class Projects implements OnInit {
   private githubService = inject(GithubService);
-  
+
   repos = signal<GithubRepo[]>([]);
   loading = signal<boolean>(true);
 
@@ -23,6 +23,7 @@ export class Projects implements OnInit {
       },
       error: (err) => {
         console.error('Error fetching repos', err);
+        this.repos.set([]);
         this.loading.set(false);
       }
     });
