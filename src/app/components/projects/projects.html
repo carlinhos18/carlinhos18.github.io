@@ -1,4 +1,4 @@
-<section id="projects" class="py-20">
+<section id="projects" class="py-20" style="animation: fade-up 0.7s ease-out 0.1s both">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between mb-12">
       <div>
@@ -19,7 +19,7 @@
         </div>
       </div>
     } @else {
-      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-6 lg:gap-8">
         @for (repo of repos(); track repo.id) {
           <app-project-card [repo]="repo"></app-project-card>
         }
